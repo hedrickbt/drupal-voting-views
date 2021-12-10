@@ -21,13 +21,16 @@ services:
     volumes:
       - drupal-modules:/var/www/html/modules
       - drupal-profiles:/var/www/html/profiles
-      - type: bind
-        source: ./data/drupal/sites
-        target: /var/www/html/sites
+      - drupal-sites:/var/www/html/sites
+# when using bind mounts, but ick, permission problems
+#      - type: bind
+#        source: ./data/drupal/sites
+#        target: /var/www/html/sites
       - drupal-themes:/var/www/html/themes
 
 volumes:
   drupal-modules:
   drupal-profiles:
+  drupal-sites:
   drupal-themes:
   db-data:

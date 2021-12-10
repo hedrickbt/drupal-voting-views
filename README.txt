@@ -6,9 +6,14 @@ https://www.digitalocean.com/community/tutorials/how-to-install-drupal-with-dock
 cp env.default .env
 make the necessary changes to .env
 
-cd
-mkdir -p data/drupal/sites
-docker run --rm drupal:9.2.10 tar -cC /var/www/html/sites . | tar -xC ./data/drupal/sites
+# when using bind mount - but ick permission issues are no fun
+# mkdir -p data/drupal/sites
+# docker run --rm drupal:9.2.10 tar -cC /var/www/html/sites . | tar -xC ./data/drupal/sites
+
+# volume mount
+docker volume create drupal-sites
+docker run --rm -v drupal-sites:/temporary/sites drupal:9.2.10 cp -aRT /var/www/html/sites /temporary/sites
+
 docker-compose up -d
 docker-compose exec drupal mkdir -p /var/www/html/sites/default/files
 docker-compose exec drupal cp /var/www/html/sites/default/default.settings.php /var/www/html/sites/default/settings.php
@@ -20,8 +25,6 @@ docker-compose exec drupal chmod 440 /var/www/html/sites/default/settings.php
 
 -Destroy-
 docker-compose down
-docker-compose rm
-docker volume rm 
 docker volume rm drupal-voting-views_db-data
 docker volume rm drupal-voting-views_drupal-data
 docker volume rm drupal-voting-views_drupal-modules
